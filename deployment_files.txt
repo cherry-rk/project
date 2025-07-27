@@ -1,0 +1,89 @@
+# Procfile (for Heroku deployment)
+web: gunicorn app:app
+
+---
+
+# runtime.txt (for Heroku - specify Python version)
+python-3.9.18
+
+---
+
+# Dockerfile (for Docker deployment)
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Download NLTK data
+RUN python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
+
+# Copy application files
+COPY . .
+
+# Create models directory
+RUN mkdir -p models
+
+# Expose port
+EXPOSE 5000
+
+# Run the application
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+
+---
+
+# docker-compose.yml (for local Docker development)
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - ./models:/app/models
+
+---
+
+# .env (environment variables - create this file)
+FLASK_ENV=production
+PORT=5000
+
+---
+
+# .gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.env
+.DS_Store
+.vscode/
+*.log
+models/*.pickle*
+fitted_model.pickle
