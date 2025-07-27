@@ -1,0 +1,169 @@
+/* General Body and App Background */
+body {
+    background-color: #e0f2f7; /* Light blue background for the page */
+}
+
+.app {
+    background-color: #ffffff; /* White background for the main app container */
+    border-radius: 15px; /* Slightly rounded corners for the app */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden; /* Ensures rounded corners apply to content */
+}
+
+/* Chat Header */
+.heading {
+    background-color: #4CAF50; /* A fresh green for the header */
+    padding: 15px;
+    color: #ffffff; /* White text for contrast */
+    border-top-left-radius: 15px; /* Match app border-radius */
+    border-top-right-radius: 15px; /* Match app border-radius */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center items */
+}
+
+.heading-avatar-icon {
+    width: 50px; /* Adjust avatar size */
+    height: 50px; /* Adjust avatar size */
+    border-radius: 50%;
+    background-color: #81C784; /* Lighter green background for avatar circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensure image is clipped to circle */
+    margin-right: 10px; /* Space between avatar and title */
+}
+
+.heading-avatar-icon img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Remove extra space below image */
+}
+
+.heading-title {
+    margin: 0; /* Remove default margin */
+    font-size: 1.5em; /* Larger title */
+    font-weight: bold;
+    flex-grow: 1; /* Allow title to take available space */
+}
+
+.heading-dot i {
+    color: #ffffff; /* White dots */
+}
+
+
+/* Message Area (Conversation Body) */
+.message {
+    background-color: #f5f5f5; /* Light grey for the conversation background */
+    padding: 15px;
+    height: 60vh; /* Make it scrollable if content exceeds */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border-bottom: 1px solid #eee; /* Subtle separator */
+}
+
+/* Chat Bubbles */
+.message-main-receiver .receiver {
+    background-color: #e0e0e0; /* Light grey for chatbot messages */
+    color: #333333; /* Darker text */
+    border-radius: 18px 18px 18px 0; /* Rounded corners for receiver */
+    padding: 10px 15px;
+    max-width: 75%;
+    margin-bottom: 10px;
+    float: left; /* Aligns to the left */
+    clear: both; /* Ensures new messages are on a new line */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* You will likely need to add a class for sender messages (your messages)
+   This is a common pattern for chatbots. Assuming 'message-main-sender' and 'sender' classes. */
+.message-main-sender .sender { /* Add this for user messages */
+    background-color: #2196F3; /* A vibrant blue for user messages */
+    color: #ffffff; /* White text for user messages */
+    border-radius: 18px 18px 0 18px; /* Rounded corners for sender */
+    padding: 10px 15px;
+    max-width: 75%;
+    margin-bottom: 10px;
+    float: right; /* Aligns to the right */
+    clear: both;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.message-text {
+    word-wrap: break-word; /* Prevents long words from breaking layout */
+}
+
+
+/* Reply Area (Input and Send) */
+.reply {
+    background-color: #ffffff; /* White background for the reply section */
+    padding: 10px 15px;
+    border-top: 1px solid #eee;
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center items */
+    border-bottom-left-radius: 15px; /* Match app border-radius */
+    border-bottom-right-radius: 15px; /* Match app border-radius */
+}
+
+.reply-emojis, .reply-send {
+    cursor: pointer;
+    padding: 0 10px;
+    transition: color 0.2s ease-in-out;
+}
+
+.reply-emojis i, .reply-send i {
+    color: #777777; /* Default icon color */
+}
+
+.reply-emojis i:hover, .reply-send i:hover {
+    color: #4CAF50; /* Green on hover */
+}
+
+.reply-main {
+    flex-grow: 1; /* Allow input to take available space */
+    margin: 0 10px; /* Space around the input */
+}
+
+#message-text {
+    border: 1px solid #ddd;
+    border-radius: 20px; /* More rounded input field */
+    padding: 8px 15px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Inner shadow */
+    transition: border-color 0.2s ease-in-out;
+}
+
+#message-text:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25); /* Subtle focus ring */
+    outline: none; /* Remove default outline */
+}
+
+/* Autocomplete suggestions list - if used by your main.js */
+.symptoms-list-container {
+    position: absolute; /* Position relative to .reply-main */
+    bottom: 60px; /* Adjust as needed to show above input */
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+#symptoms-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-height: 150px; /* Limit height and make scrollable */
+    overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#symptoms-list li {
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    color: #333;
+}
+
+#symptoms-list li:hover {
+    background-color: #e0f2f7; /* Light blue hover for suggestions */
+}

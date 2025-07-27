@@ -1,0 +1,109 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Symptom Classifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        body {
+            background: linear-gradient(45deg, #b3e5fc, #fff9c4, #b3e5fc, #fff9c4);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+        }
+        .container {
+            animation: slideIn 1s ease-out;
+        }
+        .form-container {
+            transition: all 0.3s ease;
+        }
+        .form-container:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: scale(1.02);
+        }
+        textarea:focus {
+            box-shadow: 0 0 10px rgba(0, 0, 255, 0.3);
+        }
+        button:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-6">
+        <header class="text-center mb-10">
+            <img src="{{ url_for('static', filename='robot.png') }}" alt="MedZo Robot Assistant" class="mx-auto w-48 h-48 bounce">
+            <h1 class="text-4xl font-bold text-gray-800 mt-4">Medical Symptom Classifier</h1>
+            <p class="text-gray-600 mt-2">Meet MedZo, your friendly robot assistant!</p>
+        </header>
+        <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-2xl form-container">
+            <form action="/predict" method="POST" class="space-y-6">
+                <label for="symptoms" class="block text-lg font-medium text-gray-700">Enter your symptoms:</label>
+                <textarea id="symptoms" name="symptoms" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y" rows="5" placeholder="e.g., I have a headache and feel dizzy" required></textarea>
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200 text-lg font-semibold">Ask MedZo to Predict</button>
+            </form>
+            <div class="mt-6 p-4 bg-green-100 rounded-lg text-center">
+                <h2 class="text-xl font-semibold text-green-800">Prediction by MedZo:</h2>
+                <p class="text-gray-700">Based on your symptoms: "<span id="display-symptoms">{{ symptoms }}</span>"</p>
+                <p class="text-lg font-bold text-green-900" id="display-prediction">{{ prediction }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
